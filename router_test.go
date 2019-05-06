@@ -18,9 +18,9 @@ func TestAlpha(t *testing.T) {
 
 	api := r.Group("/alpha/",ExampleLoginCheck)
 	{
-		test := api.Group("/one/",ExampleBeta)
+		test := api.Group("/",ExampleBeta)
 		{
-			test.POST("/test/", func(w http.ResponseWriter, r *http.Request) {
+			test.POST("/one/", func(w http.ResponseWriter, r *http.Request) {
 				suc,_ := RespJSON(w,0,-2)
 				suc(D{
 					"id":	20,

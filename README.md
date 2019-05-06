@@ -3,28 +3,37 @@
 
 ## Quick Start
 
-   	r := NewFRouter()
-   	r.GET("/test/", func(w http.ResponseWriter, r *http.Request) {
-   		fmt.Fprint(w,"ddddddddd")
-   	})
-   	r.POST("/post/", func(w http.ResponseWriter, r *http.Request) {
-   		fmt.Fprint(w,"postfffffff")
-   	})
+   	func main() {
+    	r := frouter.NewFRouter()
+    	r.GET("/one/", func(w http.ResponseWriter, r *http.Request) {
+    		suc,_ := frouter.RespJSON(w,0,-1)
+    		suc(frouter.D{
+    			"code":		http.StatusOK,
+    		})
+    	})
 
-   	api := r.Group("/alpha/",ExampleLoginCheck)
-   	{
-   		api.GET("/test/",http.HandlerFunc(func(w http.ResponseWriter,r *http.Request) {
-   			suc,fail := RespJSON(w,0,-1)
-   			if r.FormValue("key") == "abc" {
-   				suc("成功")
-   			}else {
-   				fail(errors.New("失败"))
-   			}
-   		}))
-   	}
+    	api := r.Group("/api/")
+    	{
+    		api.POST("/two/", func(w http.ResponseWriter, r *http.Request) {
+    			frouter.WriteJSON(w,frouter.D{
+    				"code":		http.StatusOK,
+    				"data":		nil,
+    				"msg":		"suc",
+    			})
+    		})
 
-   	server := &http.Server{
-   		Addr:		":5000",
-   		Handler:	r,
-   	}
-   	server.ListenAndServe()
+    		loginOnly := api.Group("/",frouter.ExampleLoginCheck)
+    		{
+    			loginOnly.GET("/one/", func(w http.ResponseWriter, r *http.Request) {
+    				suc,_ := frouter.RespJSON(w,0,-2)
+    				suc("成功返回")
+    			})
+    		}
+    	}
+
+    	server := &http.Server{
+    		Addr:		":5000",
+    		Handler:	r,
+    	}
+    	server.ListenAndServe()
+    }
