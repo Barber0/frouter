@@ -2,11 +2,10 @@ package frouter
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
-type Map map[string]interface{}
+type D map[string]interface{}
 
 func WriteJSON(w http.ResponseWriter, data interface{}) {
 	defer Rec()
@@ -14,18 +13,19 @@ func WriteJSON(w http.ResponseWriter, data interface{}) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Fprint(w,string(raw))
+	w.Header().Set("Content-Type","text/json")
+	w.Write(raw)
 }
 
 func RespJSON(w http.ResponseWriter,CodeSuc int,CodeErr int) (func(data interface{}),func(err error)) {
 	return func(data interface{}) {
-		WriteJSON(w,Map{
+		WriteJSON(w,D{
 			"code":		CodeSuc,
 			"data":		data,
 			"msg":		"success",
 		})
 	}, func(err error) {
-		WriteJSON(w,Map{
+		WriteJSON(w,D{
 			"code":		CodeErr,
 			"data":		err.Error(),
 			"msg":		"failed",

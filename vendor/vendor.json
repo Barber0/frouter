@@ -1,6 +1,5 @@
 {
 	"comment": "",
 	"ignore": "test",
-	"package": [],
-	"rootPath":"github.com/Barber0/frouter"
+	"package": []
 }

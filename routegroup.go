@@ -30,14 +30,14 @@ func (g *RouterGroup) DELETE(path string,handler http.HandlerFunc) {
 }
 
 func (g *RouterGroup) Group(path string, handler...Middleware) *RouterGroup {
-	path = g.joinPath(g.urlPrefix,path)
-	return &RouterGroup{path,g.ServeMux,handler}
+	path = g.urlPrefix+g.cleanPath(path)
+	return &RouterGroup{path,g.ServeMux,append(g.middwares,handler...)}
 }
 
 func (g *RouterGroup) Request(method string,path string,handler http.Handler) {
-	path = g.joinPath(g.urlPrefix,path)
+	path = g.urlPrefix+g.cleanPath(path)
 	for i := 0; i < len(g.middwares); i++ {
-		handler = g.middwares[i](handler)
+		handler = (g.middwares[i])(handler)
 	}
 	g.Handle(path,g.checkMethod(method,handler))
 }
@@ -53,18 +53,16 @@ func (g *RouterGroup) checkMethod(method string,next http.Handler) http.HandlerF
 	}
 }
 
-func (g *RouterGroup) joinPath(prefix string,path string) string {
-	prefixEle := strings.Split(prefix,"/")
+func (g *RouterGroup) cleanPath(path string) string {
 	pathEle := strings.Split(path,"/")
-	resEle := make([]string,len(prefixEle)+len(pathEle))
+	resEle := make([]string,len(pathEle))
 	var i int
-	for _,v:=range append(prefixEle,pathEle...){
+	for _,v:=range pathEle{
 		v = strings.TrimSpace(v)
 		if v != "" {
 			resEle[i] = v
 			i++
 		}
 	}
-	res := "/" + strings.Join(resEle[:i+1],"/")
-	return res
+	return strings.Join(resEle[:i+1],"/")
 }

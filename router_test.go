@@ -18,6 +18,18 @@ func TestAlpha(t *testing.T) {
 
 	api := r.Group("/alpha/",ExampleLoginCheck)
 	{
+		test := api.Group("/one/",ExampleBeta)
+		{
+			test.POST("/test/", func(w http.ResponseWriter, r *http.Request) {
+				suc,_ := RespJSON(w,0,-2)
+				suc(D{
+					"id":	20,
+					"uname":"alpha",
+					"pass":	"one",
+				})
+			})
+		}
+
 		api.GET("/test/",http.HandlerFunc(func(w http.ResponseWriter,r *http.Request) {
 			suc,fail := RespJSON(w,0,-1)
 			if r.FormValue("key") == "abc" {
@@ -33,5 +45,4 @@ func TestAlpha(t *testing.T) {
 		Handler:	r,
 	}
 	server.ListenAndServe()
-
 }

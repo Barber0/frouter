@@ -17,7 +17,9 @@ type Router struct {
 }
 
 func NewFRouter() *Router {
-	router := &Router{}
-	router.ServeMux = http.NewServeMux()
+	router := &Router{RouterGroup{
+		ServeMux:	http.NewServeMux(),
+		urlPrefix:	"/",
+	}}
 	return router
 }
