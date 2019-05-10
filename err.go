@@ -21,3 +21,10 @@ func Rec() {
 		log.Printf("[frouter] %v",err)
 	}
 }
+
+func Check(err error, callback func(err2 error)) {
+	if err != nil {
+		callback(err)
+		panic(err)
+	}
+}

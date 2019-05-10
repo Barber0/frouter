@@ -1,5 +1,5 @@
 # FRouter
-## A web router library for Minimalism
+A web router library for Minimalism
 
 ## Quick Start
 
