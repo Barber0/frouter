@@ -20,7 +20,7 @@ func ReadJSON(r *http.Request, out interface{}) error {
 	return json.Unmarshal(body,out)
 }
 
-func WriteJSON(w http.ResponseWriter, data interface{}) {
+func JSON(w http.ResponseWriter, data interface{}) {
 	defer Rec()
 	raw,err := json.Marshal(data)
 	if err != nil {
@@ -28,22 +28,6 @@ func WriteJSON(w http.ResponseWriter, data interface{}) {
 	}
 	w.Header().Set("Content-Type","text/json")
 	w.Write(raw)
-}
-
-func RespJSON(w http.ResponseWriter,CodeSuc int,CodeErr int) (func(data interface{}),func(err error)) {
-	return func(data interface{}) {
-		WriteJSON(w,D{
-			"code":		CodeSuc,
-			"data":		data,
-			"msg":		"success",
-		})
-	}, func(err error) {
-		WriteJSON(w,D{
-			"code":		CodeErr,
-			"data":		err.Error(),
-			"msg":		"failed",
-		})
-	}
 }
 
 func SaveFile(r *http.Request, key string, path string) error {
@@ -61,7 +45,7 @@ func SaveFile(r *http.Request, key string, path string) error {
 	return err
 }
 
-func WriteHTML(w http.ResponseWriter,path string,data...interface{})  {
+func HTML(w http.ResponseWriter,path string,data...interface{})  {
 	defer Rec()
 	tpl,err := template.ParseFiles(path)
 	if err != nil {
