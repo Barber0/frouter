@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 )
 
 type D map[string]interface{}
@@ -54,4 +55,14 @@ func HTML(w http.ResponseWriter,path string,data...interface{})  {
 	if err := tpl.Execute(w, data); err != nil {
 		panic(err)
 	}
+}
+
+func FormQuery(r *http.Request,key string, val ...string) string {
+	if strings.TrimSpace(r.FormValue(key)) == "" {
+		if len(val) == 0 {
+			return ""
+		}
+		return val[0]
+	}
+	return strings.TrimSpace(r.FormValue(key))
 }
