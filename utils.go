@@ -2,11 +2,13 @@ package frouter
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -65,4 +67,28 @@ func FormQuery(r *http.Request,key string, val ...string) string {
 		return val[0]
 	}
 	return strings.TrimSpace(r.FormValue(key))
+}
+
+func ClientIP(r *http.Request) string {
+	cIp := r.Header.Get("X-Forwarded-For")
+	cIp = strings.TrimSpace(strings.Split(cIp,",")[0])
+	if cIp == "" {
+		cIp = strings.TrimSpace(r.Header.Get("X-Real-Ip"))
+	}
+	if cIp != "" {
+		return cIp
+	}
+	return ""
+
+	cIp = splitHostPort(r.RemoteAddr)
+	return cIp
+}
+
+func splitHostPort(addr string) string {
+	re := regexp.MustCompile(`\[[a-zA-Z0-9.]+\]`)
+	res := string(re.Find([]byte(addr)))
+	if res != "" {
+		fmt.Println(res[1:len(res)-1])
+	}
+	return res
 }
