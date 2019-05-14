@@ -2,7 +2,6 @@ package frouter
 
 import (
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"io"
 	"io/ioutil"
@@ -88,7 +87,7 @@ func splitHostPort(addr string) string {
 	re := regexp.MustCompile(`\[[a-zA-Z0-9.]+\]`)
 	res := string(re.Find([]byte(addr)))
 	if res != "" {
-		fmt.Println(res[1:len(res)-1])
+		res = res[1:len(res)-1]
 	}
 	return res
 }
