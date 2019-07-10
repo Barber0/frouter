@@ -23,3 +23,11 @@ func NewFRouter() *Router {
 	}}
 	return router
 }
+
+func NewFRouterWithMux(mux *http.ServeMux) *Router {
+	router:=&Router{RouterGroup{
+		ServeMux:	mux,
+		urlPrefix:	"/",
+	}}
+	return router
+}
